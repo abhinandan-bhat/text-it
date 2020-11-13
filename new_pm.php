@@ -64,7 +64,7 @@ if (isset($_SESSION['username'])) {
 <?php
 							$form = false;
 						}
-						else $error = 'An error occurred while sending the message.';//Otherwise, we say that an error occured
+						else $error = '.$title.', '.$_SESSION['userid'].', '.$dn1['recipid'].', '.$ciphertext.', '.time().', '.$tag.''An error occurred while sending the message.';//Otherwise, we say that an error occured
 					}
 					else $error = 'Error while sending the message.';//Otherwise, we say the user cannot send a message to himself
 				}
