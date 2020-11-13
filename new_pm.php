@@ -1,3 +1,4 @@
+  
 <?php
 include('config.php');
 ?>
@@ -7,21 +8,17 @@ include('config.php');
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="style.css" rel="stylesheet" title="Style" />
-		<title>New Message</title>
+		<title>New PM</title>
 	</head>
 	<body>
 
 <?php
 //We check if the user is logged in
-
 if (isset($_SESSION['username'])) {
 	$form     = true;
 	$otitle   = '';
 	$orecip   = '';
-    $omessage = '';
-    $id='';
-    if(isset($_GET['rec_id'])){
-    $id=$_GET['rec_id'];}
+	$omessage = '';
 	//We check if the form has been sent
 	if (isset($_POST['title'], $_POST['recip'], $_POST['message'])) {
 		$otitle   = $_POST['title'];
@@ -34,7 +31,7 @@ if (isset($_SESSION['username'])) {
 			$omessage = stripslashes($omessage);
 		}
 		//We check if all the fields are filled
-		if ($_POST['recip'] != '' and $_POST['message'] != '') {
+		if ($_POST['title'] != '' and $_POST['recip'] != '' and $_POST['message'] != '') {
 			//We protect the variables
 			$title   = mysqli_real_escape_string($link, $otitle);
 			$recip   = mysqli_real_escape_string($link, $orecip);
@@ -59,12 +56,12 @@ if (isset($_SESSION['username'])) {
 						if (mysqli_query($link, 'insert into pm (title, sender, recipient, message, timestamp, tag) values ("'.$title.'", "'.$_SESSION['userid'].'", "'.$dn1['recipid'].'", "'.$ciphertext.'", "'.time().'", "'.$tag.'")')) {
 ?>
 		<div class="message">The message has successfully been sent.<br />
-		
+		<a href="mailbox.php">Mailbox</a></div>
 
 <?php
 							$form = false;
 						}
-						else $error = .$title. .$_SESSION['userid']..$dn1['recipid']..$ciphertext..time()..$tag.;//Otherwise, we say that an error occured
+						else $error = 'An error occurred while sending the message.';//Otherwise, we say that an error occured
 					}
 					else $error = 'Error while sending the message.';//Otherwise, we say the user cannot send a message to himself
 				}
@@ -82,13 +79,12 @@ if (isset($_SESSION['username'])) {
 		//We display the form
 ?>
 		<div class="content">
-			<h1>New Message</h1>
+			<h1>New PM</h1>
 			<form action="new_pm.php" method="post">
 				Please fill the following form to send a PM.<br />
-				<label for="recip">Recipient<span class="small"> (Username)</span></label><input type="text" value="<?php if($id!=''){echo $id; } ?>" id="recip" name="recip" /><br />
+				<label for="recip">Recipient<span class="small"> (Username)</span></label><input type="text" value="<?php echo htmlentities($orecip, ENT_QUOTES, 'UTF-8'); ?>" id="recip" name="recip" /><br />
 				<label for="title">Title</label><input type="text" value="<?php echo htmlentities($otitle, ENT_QUOTES, 'UTF-8'); ?>" id="title" name="title" /><br />
-				<label for="message">Message</label><textarea cols="114" rows="5" id="message" name="message"><?php echo htmlentities($omessage, ENT_QUOTES, 'UTF-8'); ?></textarea><br />
-				<br/>
+				<label for="message">Message</label><textarea cols="40" rows="5" id="message" name="message"><?php echo htmlentities($omessage, ENT_QUOTES, 'UTF-8'); ?></textarea><br />
 				<input type="submit" value="Send" />
 			</form>
 		</div>
